@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import Form from "@components/Form";
 
@@ -13,8 +13,9 @@ const EditPrompt = () => {
   });
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
+  const { id } = useParams();
+  console.log(id);
+  const promptId = id;
 
   useEffect(() => {
     const getPromptDetails = async () => {
