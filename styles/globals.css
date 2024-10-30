@@ -106,7 +106,7 @@
 }
 
 .desc {
-  @apply mt-5 text-lg text-gray-600 sm:text-xl max-w-2xl;
+  @apply mt-5 text-lg text-gray-600 sm:text-xl italic font-serif max-w-2xl;
 }
 
 .search_input {
