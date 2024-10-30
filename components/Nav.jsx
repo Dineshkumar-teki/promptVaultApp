@@ -4,15 +4,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import BeatLoader from "react-spinners/BeatLoader";
 
 const Nav = () => {
   const { data: session } = useSession();
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     (async () => {
-      const response = await getProviders();
-      setProviders(response);
+      try {
+        const response = await getProviders();
+        setProviders(response);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
   return (
@@ -29,41 +38,54 @@ const Nav = () => {
       </Link>
 
       {/* desktop navigation */}
-      <div className="sm:flex hidden">
-        {session?.user ? (
-          <div className="flex gap-3">
-            <Link href="/create-prompt" className="black_btn">
-              Create Post
-            </Link>
-            <button type="button" onClick={signOut} className="outline_btn">
-              Sign Out
-            </button>
-            <Link href="/profile">
-              <Image
-                src={session?.user.image}
-                width={37}
-                height={37}
-                className="rounded-full"
-                alt="profile"
-              />
-            </Link>
-          </div>
-        ) : (
-          <>
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  className="black_btn"
-                >
-                  Sign In
-                </button>
-              ))}
-          </>
-        )}
-      </div>
+      {loading ? (
+        <div className="w-[200px] flex justify-center items-center">
+          <BeatLoader
+            color="black"
+            loading={loading}
+            size={10}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      ) : (
+        <div className="sm:flex hidden">
+          {session?.user ? (
+            <div className="flex gap-3">
+              <Link href="/create-prompt" className="black_btn">
+                Create Post
+              </Link>
+              <button type="button" onClick={signOut} className="outline_btn">
+                Sign Out
+              </button>
+              <Link href="/profile">
+                <Image
+                  src={session?.user.image}
+                  width={37}
+                  height={37}
+                  className="rounded-full"
+                  alt="profile"
+                />
+              </Link>
+            </div>
+          ) : (
+            <>
+              {providers &&
+                Object.values(providers).map((provider) => (
+                  <button
+                    type="button"
+                    key={provider.name}
+                    onClick={() => signIn(provider.id)}
+                    className="black_btn"
+                  >
+                    Sign In
+                  </button>
+                ))}
+            </>
+          )}
+        </div>
+      )}
+
       {/* mobile navigation */}
       <div className="sm:hidden flex relative">
         {session?.user ? (

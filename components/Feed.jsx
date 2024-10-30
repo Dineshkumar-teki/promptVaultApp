@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
+import PacmanLoader from "react-spinners/PacmanLoader";
 
 // view different views
 const PromptCardList = ({ data, handleTagClick }) => {
@@ -22,6 +23,7 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState(posts);
+  const [loading, setLoading] = useState(true);
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
@@ -51,10 +53,16 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch("/api/prompt");
-      const data = await response.json();
-      setPosts(data);
-      setFilteredPosts(data);
+      try {
+        const response = await fetch("/api/prompt");
+        const data = await response.json();
+        setPosts(data);
+        setFilteredPosts(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchPosts();
   }, []);
@@ -71,12 +79,23 @@ const Feed = () => {
           className="search_input peer"
         />
       </form>
-      <PromptCardList
-        data={filteredPosts}
-        handleTagClick={(tag) => {
-          handleSearchChange1(tag);
-        }}
-      />
+      {loading ? (
+        <PacmanLoader
+          color="orange"
+          loading={loading}
+          size={20}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+          className="mt-28"
+        />
+      ) : (
+        <PromptCardList
+          data={filteredPosts}
+          handleTagClick={(tag) => {
+            handleSearchChange1(tag);
+          }}
+        />
+      )}
     </section>
   );
 };

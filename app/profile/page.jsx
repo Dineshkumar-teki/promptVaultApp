@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
+import PacmanLoader from "react-spinners/PacmanLoader";
 import Profile from "@components/Profile";
 
 const MyProfile = () => {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const router = useRouter();
 
   const handleEdit = (post) => {
@@ -32,13 +34,29 @@ const MyProfile = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${session?.user.id}/posts`);
-      const data = await response.json();
-      setPosts(data);
+      try {
+        const response = await fetch(`/api/users/${session?.user.id}/posts`);
+        const data = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
     if (session?.user.id) fetchPosts();
   }, []);
-  return (
+
+  return loading ? (
+    <PacmanLoader
+      color="orange"
+      loading={loading}
+      size={20}
+      aria-label="Loading Spinner"
+      data-testid="loader"
+      className="mt-[50vh]"
+    />
+  ) : (
     <Profile
       name="My"
       desc="Welcome to your personalized profile page"
