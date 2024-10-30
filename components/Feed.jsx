@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
 
 // view different views
-
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className="mt-16 prompt_layout">

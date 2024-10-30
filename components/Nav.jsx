@@ -16,8 +16,8 @@ const Nav = () => {
     })();
   }, []);
   return (
-    <nav className="flex-between w-full mb-16 pt-3">
-      <Link href="/" className="flex gap-2 flex-center">
+    <nav className="flex justify-between items-center border fixed top-5 w-[95%] px-5 py-2 z-10 rounded-full backdrop-blur-sm bg-white/30">
+      <Link href="/" className="flex gap-2 items-center ">
         <Image
           src="/assets/icons/cloud.png"
           alt="PromptVault Logo"
@@ -25,7 +25,7 @@ const Nav = () => {
           height={30}
           className="object-contain"
         />
-        <p className="logo_text">PromptVault</p>
+        <p className="logo_text logo_color">PromptVault</p>
       </Link>
 
       {/* desktop navigation */}
